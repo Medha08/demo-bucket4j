@@ -1,0 +1,18 @@
+spring:
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: /test
+      strategy: first
+      http-response-body: "{ \"status\": 500, \"error\": \"Internal Server Error\" }"
+      rate-limits:
+        - bandwidths:
+            - capacity: 30
+              time: 1
+              unit: seconds
